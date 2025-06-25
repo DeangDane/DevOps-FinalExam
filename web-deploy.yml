@@ -1,0 +1,31 @@
+---
+- name: Deploy Laravel App in Web Pod
+  hosts: localhost
+  tasks:
+    - name: Exec into Laravel web container and pull latest code
+      kubernetes.core.k8s_exec:
+        namespace: default
+        pod: laravel-pod
+        container: web-server
+        command: git pull
+
+    - name: Install PHP dependencies using Composer
+      kubernetes.core.k8s_exec:
+        namespace: default
+        pod: laravel-pod
+        container: web-server
+        command: composer install
+
+    - name: Install JS dependencies using NPM
+      kubernetes.core.k8s_exec:
+        namespace: default
+        pod: laravel-pod
+        container: web-server
+        command: npm install
+
+    - name: Run Laravel tests with SQLite
+      kubernetes.core.k8s_exec:
+        namespace: default
+        pod: laravel-pod
+        container: web-server
+        command: php artisan test
