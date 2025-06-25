@@ -5,7 +5,6 @@ pipeline {
         COMPOSER_REPO = 'http://203.95.199.55:8081/repository/composer-proxy-i4/'
         NPM_REPO_GROUP = 'http://203.95.199.55:8081/repository/npm-group-i4/'
     }
-
     triggers {
         pollSCM('H/5 * * * *')  // Poll Git every 5 minutes
     }
@@ -20,10 +19,10 @@ pipeline {
                 sh '''
                 /Users/deangdane/bin/composer config -g repo.packagist composer $COMPOSER_REPO
                 /Users/deangdane/bin/composer install --no-interaction --prefer-dist --optimize-autoloader
+                ls -la vendor/bin
                 '''
             }
         }
-
         stage('NPM Install') {
             steps {
                 sh '''
@@ -34,7 +33,9 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh './vendor/bin/phpunit --configuration phpunit.xml'
+                sh '''
+                php ./vendor/bin/phpunit --configuration phpunit.xml
+                '''
             }
         }
         stage('Deploy') {
