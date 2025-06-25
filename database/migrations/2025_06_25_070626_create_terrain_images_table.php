@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('terrain_images', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('terrain_id')->constrained('terrains')->onDelete('cascade');
+            $table->string('image_path');
+            $table->timestamp('uploaded_at')->useCurrent();
             $table->timestamps();
         });
     }
