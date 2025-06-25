@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: laravel-pod
+  labels:
+    app: laravel-app
+spec:
+  containers:
+    - name: web-server
+      image: php:8.2-fpm
+      ports:
+        - containerPort: 22
+      volumeMounts:
+        - name: app-code
+          mountPath: /var/www/html
+    - name: nginx
+      image: nginx:latest
+      ports:
+        - containerPort: 8080
+      volumeMounts:
+        - name: app-code
+          mountPath: /var/www/html
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+    - name: mysql
+      image: mysql:8.0
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: Hello@123
+        - name: MYSQL_DATABASE
+          value: deangdane-db
+      ports:
+        - containerPort: 3306
+      volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+  volumes:
+    - name: app-code
+      emptyDir: {}
+    - name: nginx-config
+      configMap:
+        name: nginx-config
+    - name: mysql-data
+      emptyDir: {}
