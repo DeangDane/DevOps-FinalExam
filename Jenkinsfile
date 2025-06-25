@@ -13,20 +13,19 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Composer Install') {
+            steps {
+                sh '''
+                composer config -g repo.packagist composer $COMPOSER_REPO
+                composer install --no-interaction --prefer-dist --optimize-autoloader
+                '''
+            }
+        }
         stage('NPM Install') {
             steps {
                 sh '''
                 /opt/homebrew/bin/npm config set registry $NPM_REPO_GROUP
                 /opt/homebrew/bin/npm install
-                '''
-            }
-        }
-
-        stage('NPM Install') {
-            steps {
-                sh '''
-                /Users/deangdane/bin/npm config set registry $NPM_REPO_GROUP
-                /Users/deangdane/bin/npm install
                 '''
             }
         }
